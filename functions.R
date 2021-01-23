@@ -1,7 +1,9 @@
 
 get_info <- function(data, var_name, FUNC, icon) {
+  
+  value = FUNC(data[[var_name]], na.rm=T)
+  
   FUNC_name = as.character(substitute(FUNC))
-  value = FUNC(data[var_name], na.rm=T)
   
   if (FUNC_name %in% c('min','max')) {
     state = sort(data$'State Abbr'[data[,var_name]==value])
