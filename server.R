@@ -18,11 +18,13 @@ shinyServer(function(input, output) {
     )
     
     # graph ####
+    columnSelect = reactive(paste0("`",input$colSel,"`"))
+    
     output$covidPlot <- renderPlot({
         ggplot(covid_data %>% 
                    filter(.,State==input$stateSel), 
-               aes(x=`Submission Date`, 
-                   y=`New Cases`)) + 
+               aes_string(x="`Submission Date`", 
+                   y=columnSelect())) + 
             geom_line(aes(color=State)) +
             geom_smooth(method='loess', formula='y~x', se=F) +
             ggtitle(paste(input$colSel,"Over Time for",input$stateSel)) +
@@ -32,9 +34,8 @@ shinyServer(function(input, output) {
     # datatable ####
     output$table <- renderDataTable({
         datatable(covid_data %>% 
-            filter(.,State==input$stateSel) %>% 
-            arrange(.,desc(`Submission Date`)),rownames = FALSE) %>%
-           # formatCurrency(new_case, currency='', interval=3, mark=",") %>% 
+           # filter(.,State==input$stateSel) %>% 
+            arrange(.,desc(`Submission Date`,State)),rownames = FALSE) %>%
             formatStyle(columns = colnames(covid_data),
                         background="skyblue", fontWeight = "bold")
     })
