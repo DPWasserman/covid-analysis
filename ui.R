@@ -1,17 +1,27 @@
 shinyUI(dashboardPage(
     dashboardHeader(title=paste("New COVID Cases", as_of_date)),
     dashboardSidebar(
-        sidebarUserPanel("David", image = 'DPW_20201121.jpg'),
         sidebarMenu(
-            menuItem("Graph", tabName = "graph", icon = icon("map")),
-            ## icon is a built-in function that has a library of icons
-            menuItem("Data", tabName = "data", icon = icon("database"))
+            menuItem("Introduction", tabName = "intro", icon = icon("clinic-medical")),
+            menuItem("State Graphs", tabName = "graph", icon = icon("map")),
+            menuItem("Data", tabName = "data", icon = icon("database")),
+            menuItem("About", tabName = 'about', icon=icon("address-card"))
         )
     ),
     dashboardBody(tabItems(
+        tabItem(tabName = 'intro',
+                fluidRow(box(p('During the past year, the world has been beset by 
+                             a pandemic going by many names: Coronavirus, COVID-19, SARS-COV-2, et al.
+                             It is said that to defeat one\'s opponent, one must know the enemy.
+                             Understanding trend analysis and correlation is a good approach.'),
+                             p('This project attempts to visualize the trends of the disease on two levels: 
+                             Cases and Deaths. This is done on a state by state basis.'),
+                             p('Data about the disease was obtained from healthcare.gov 
+                             while population data for 2020 came from Wikipedia.'),
+                             title="Introduction", width=12))),
+        
         tabItem(
             tabName = 'graph',
-            
             fluidRow(
                 infoBoxOutput("latestMaxBox"),
                 infoBoxOutput("latestMinBox"),
@@ -30,9 +40,20 @@ shinyUI(dashboardPage(
                 choice = colChoices
             ),width=6))
         ),
+        
         tabItem(tabName = "data",
+                fluidRow(box(dataTableOutput("table"), width = 12))
+                ),
+        
+        tabItem(tabName='about',
                 fluidRow(box(
-                    DT::dataTableOutput("table"), width = 12
-                )))
+                             p(img(src='DPW_20201121.jpg',height=50,width=50),
+                               'Author: David Wasserman',
+                               br(),
+                               'Email:',a('davidphilipwasserman@gmail.com',
+                                          href='mailto:davidphilipwasserman@gmail.com'))
+                             )
+                         )
+                )
     ))
 ))
