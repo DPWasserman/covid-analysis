@@ -17,7 +17,7 @@ shinyUI(dashboardPage(
                              p('This project attempts to visualize the trends of the disease on two levels: 
                              Cases and Deaths. This is done on a state by state basis.'),
                              p('Data about the disease was obtained from ',
-                               a('healthcare.gov',
+                               a('healthdata.gov',
                                  href='https://healthdata.gov/dataset/united-states-covid-19-cases-and-deaths-state-over-time'), 
                                'while population data for 2020 came from ',
                                a('Wikipedia',href=Wiki_url),'.'),
