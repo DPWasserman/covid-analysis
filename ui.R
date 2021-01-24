@@ -26,8 +26,8 @@ shinyUI(dashboardPage(
         tabItem(
             tabName = 'graph',
             fluidRow(
+                infoBoxOutput("latestMinBox"), 
                 infoBoxOutput("latestMaxBox"),
-                infoBoxOutput("latestMinBox"),
                 infoBoxOutput("latestAvgBox")
             ),
 
