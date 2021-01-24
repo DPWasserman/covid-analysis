@@ -48,10 +48,13 @@ shinyUI(dashboardPage(
         tabItem(tabName='about',
                 fluidRow(box(
                              p(img(src='DPW_20201121.jpg',height=50,width=50),
-                               'Author: David Wasserman',
-                               br(),
-                               'Email:',a('davidphilipwasserman@gmail.com',
-                                          href='mailto:davidphilipwasserman@gmail.com'))
+                               'Author: David Wasserman'),
+                             br(),
+                             p('Email:',a('davidphilipwasserman@gmail.com',
+                                          href='mailto:davidphilipwasserman@gmail.com')), 
+                             br(),
+                             p('GitHub:',a('https://github.com/DPWasserman/covid_analysis',
+                                           href='https://github.com/DPWasserman/covid_analysis'))
                              )
                          )
                 )
