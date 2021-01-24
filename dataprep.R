@@ -2,9 +2,9 @@ library(htmltab)
 
 state_df <- data.frame(state.abb,state.name)
 
-url = 'https://en.wikipedia.org/wiki/List_of_states_and_territories_of_the_United_States_by_population'
+Wiki_url = 'https://en.wikipedia.org/wiki/List_of_states_and_territories_of_the_United_States_by_population'
 
-census_df = htmltab(url,1) # Get the first table on the HTML web page
+census_df = htmltab(Wiki_url,1) # Get the first table on the HTML web page
 census_df = census_df %>% select(c(3,4)) # Take the State and Est 2020 Population columns
 colnames(census_df) = c('State','Population2020') # Rename the columns
 
@@ -55,22 +55,9 @@ value_formats = data.frame(col=colChoices,format=colFormats)
 latest_date <- max(covid_data$`Submission Date`)
 as_of_date <- format(latest_date, "%m/%d/%Y")
 
-states <- state.name  # sort(unique(covid_data$state))
-
-# Info box calculations ####
-latest_new_cases <- covid_data %>% 
-  ungroup() %>% 
-  filter(., `Submission Date`==latest_date, State %in% states) %>% 
-  select(., `State`, `New Cases`=`New Cases Per Capita`)
+states <- state.name
 
 latest_data <- covid_data %>% 
   ungroup() %>% 
   filter(`Submission Date`==latest_date, State %in% states)
 
-min_val  <- min(latest_new_cases$`New Cases`)
-min_state <- paste(latest_new_cases$State[latest_new_cases[,'New Cases']==min_val], collapse=", ")
-
-max_val <- max(latest_new_cases$`New Cases`)
-max_state <- paste(latest_new_cases$State[latest_new_cases[,'New Cases']==max_val], collapse=", ")
-
-med_val <- median(latest_new_cases$`New Cases`, na.rm=T)
