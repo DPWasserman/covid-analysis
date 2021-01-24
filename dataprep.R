@@ -28,7 +28,8 @@ covid_data <- covid_data %>%
   mutate(total_cases_per_capita=tot_cases/Population2020,
          new_cases_per_capita=new_case/Population2020,
          total_death_per_capita=tot_death/Population2020,
-         new_death_per_capita=new_death/Population2020)
+         new_death_per_capita=new_death/Population2020,
+         mortality_rate=tot_death/tot_cases)
 
 covid_data = covid_data %>% 
   select(State=State,
@@ -44,10 +45,11 @@ covid_data = covid_data %>%
         'Total Cases Per Capita'=total_cases_per_capita, 
         'New Cases Per Capita'=new_cases_per_capita,
         'Total Deaths Per Capita'=total_death_per_capita, 
-        'New Deaths Per Capita'=new_death_per_capita)
+        'New Deaths Per Capita'=new_death_per_capita,
+        'Mortality Rate'=mortality_rate)
 
 colChoices <- sort(colnames(covid_data)[-1:-4])
-colFormats <- c(1,1,1,100,1,100,1,100,1,100)
+colFormats <- c(1,1,100,1,100,1,100,1,100,1,100)
 value_formats = data.frame(col=colChoices,format=colFormats)
 
 latest_date <- max(covid_data$`Submission Date`)
