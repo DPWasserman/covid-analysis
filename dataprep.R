@@ -14,7 +14,7 @@ census_df = census_df %>%
   ) %>% inner_join(state_df, by=c("State"="state.name"))
 
 # Data downloaded from https://healthdata.gov/dataset/united-states-covid-19-cases-and-deaths-state-over-time
-covid_data <- read.csv('data/United_States_COVID-19_Cases_and_Deaths_by_State_over_Time.csv')
+covid_data <- read.csv('./data/United_States_COVID-19_Cases_and_Deaths_by_State_over_Time.csv')
 
 covid_data[['submission_date']] <- as.Date(covid_data[['submission_date']], "%m/%d/%Y")
 covid_data$new_case[covid_data$new_case<0] = 0 # Correction for negative new cases in data
