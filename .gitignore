@@ -2,3 +2,5 @@ old_files/
 data/
 .Rhistory
 rsconnect/
+.Rproj.user
+*.Rproj
