@@ -18,6 +18,7 @@ covid_data <- read.csv('./data/United_States_COVID-19_Cases_and_Deaths_by_State_
 
 covid_data[['submission_date']] <- as.Date(covid_data[['submission_date']], "%m/%d/%Y")
 covid_data$new_case[covid_data$new_case<0] = 0 # Correction for negative new cases in data
+covid_data$new_death[covid_data$new_death<0] = 0 # Correction for negative new deaths in data
 
 covid_data <- covid_data %>% 
   group_by(., state) %>% 
