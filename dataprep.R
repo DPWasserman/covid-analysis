@@ -1,5 +1,6 @@
 
 state_df <- data.frame(state.abb,state.name)
+states <- state.name
 
 Wiki_url = 'https://en.wikipedia.org/wiki/List_of_states_and_territories_of_the_United_States_by_population'
 census_df <- read.csv('./data/census2020.csv')
@@ -19,7 +20,7 @@ covid_data <- covid_data %>%
   arrange(., state, submission_date) %>% 
   mutate(., delta_new_case=new_case-lag(new_case,1), delta_new_death=new_death-lag(new_death,1)) %>% 
   select(., state, submission_date, tot_cases,new_case,delta_new_case, tot_death,new_death,delta_new_death) %>% 
-  full_join(census_df, by=c("state"="state.abb")) %>% 
+  inner_join(census_df, by=c("state"="state.abb")) %>% 
   mutate(total_cases_per_capita=tot_cases/Population2020,
          new_cases_per_capita=new_case/Population2020,
          total_death_per_capita=tot_death/Population2020,
@@ -41,13 +42,12 @@ covid_data = covid_data %>%
         'New Cases Per Capita'=new_cases_per_capita,
         'Total Deaths Per Capita'=total_death_per_capita, 
         'New Deaths Per Capita'=new_death_per_capita,
-        'Mortality Rate'=mortality_rate)
+        'Mortality Rate'=mortality_rate) %>% 
+  filter(State %in% states)
 
 colChoices <- sort(colnames(covid_data)[-1:-4])
 colFormats <- c(1,1,100,1,100,1,100,1,100,1,100)
 value_formats = data.frame(col=colChoices,format=colFormats)
-
-states <- state.name
 
 latest_data <- covid_data %>% 
   ungroup() %>% 
