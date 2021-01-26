@@ -25,7 +25,10 @@ covid_data <- covid_data %>%
          new_cases_per_capita=new_case/Population2020,
          total_death_per_capita=tot_death/Population2020,
          new_death_per_capita=new_death/Population2020,
-         mortality_rate=tot_death/tot_cases)
+         roll7d_new_cases_per_capita=zoo::rollmean(new_cases_per_capita,k=7,fill=NA,align='right'),
+         roll7d_new_death_per_capita=zoo::rollmean(new_death_per_capita,k=7,fill=NA,align='right'),
+         mortality_rate=case_when(tot_cases==0 ~ 0,
+                                  TRUE ~ tot_death/tot_cases))
 
 covid_data = covid_data %>% 
   select(State=State,
@@ -42,11 +45,13 @@ covid_data = covid_data %>%
         'New Cases Per Capita'=new_cases_per_capita,
         'Total Deaths Per Capita'=total_death_per_capita, 
         'New Deaths Per Capita'=new_death_per_capita,
-        'Mortality Rate'=mortality_rate) %>% 
+        'Mortality Rate'=mortality_rate,
+        'Rolling 7 Day New Cases Per Capita'=roll7d_new_cases_per_capita,
+        'Rolling 7 Day New Deaths Per Capita'=roll7d_new_death_per_capita) %>% 
   filter(State %in% states)
 
 colChoices <- sort(colnames(covid_data)[-1:-4])
-colFormats <- c(1,1,100,1,100,1,100,1,100,1,100)
+colFormats <- c(1,1,100,1,100,1,100,100,100,1,100,1,100)
 value_formats = data.frame(col=colChoices,format=colFormats)
 
 latest_data <- covid_data %>% 

@@ -34,10 +34,9 @@ shinyServer(function(input, output) {
     # datatable ####
     output$table <- renderDataTable({
         datatable(covid_data %>% 
-           # filter(.,State==input$stateSel) %>% 
             arrange(.,desc(`Submission Date`),State),rownames = FALSE) %>%
             formatCurrency(4:10, currency="", interval=3,mark=",",digits=0) %>% 
-            formatPercentage(11:15, 2) %>% 
+            formatPercentage(11:17, 2) %>% 
             formatStyle(columns = colnames(covid_data),
                         background="skyblue", fontWeight = "bold")
     })
