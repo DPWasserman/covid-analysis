@@ -1,5 +1,6 @@
 shinyUI(dashboardPage(
-    dashboardHeader(title=paste("COVID Analysis", as_of_date, sep=": ")),
+    dashboardHeader(title=paste("COVID Analysis as of", as_of_date),
+                    titleWidth=350),
     dashboardSidebar(
         sidebarMenu(
             menuItem("Introduction", tabName = "intro", icon = icon("clinic-medical")),
