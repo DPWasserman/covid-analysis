@@ -1,60 +1,81 @@
+## Variables to hold the USA (Used for aggregation)
+USA.abb <- 'USA'
+USA <- ' United States of America'
 
-state_df <- data.frame(state.abb,state.name)
-states <- state.name
+## Creates the States filter
+state_df <- data.frame(c(state.abb,USA.abb),c(state.name, USA))
+states <- sort(c(state.name, USA))
 
+## Source of the Census data
 Wiki_url = 'https://en.wikipedia.org/wiki/List_of_states_and_territories_of_the_United_States_by_population'
 census_df <- read.csv('./data/census2020.csv')
-  
-# Data downloaded from https://healthdata.gov/dataset/united-states-covid-19-cases-and-deaths-state-over-time
-covid_data <- read.csv('./data/United_States_COVID-19_Cases_and_Deaths_by_State_over_Time.csv')
 
-covid_data[['submission_date']] <- as.Date(covid_data[['submission_date']], "%m/%d/%Y")
-latest_date <- max(covid_data$submission_date)
-as_of_date <- format(latest_date, "%m/%d/%Y")
+## Form the COVID data set
+# Data downloaded from https://covidtracking.com/data/download/all-states-history.csv
+covid_data <- read.csv('data/all-states-history.csv')
+covid_data = covid_data %>% 
+  filter(state %in% state.abb) %>% 
+  select(submission_date=date,
+         state,
+         tot_death=death,
+         tot_negative=negative,
+         tot_cases=positive,
+         tot_tests=totalTestResults) %>%
+  mutate(submission_date=as.Date(submission_date, '%Y-%m-%d'))
 
-covid_data$new_case[covid_data$new_case<0] = 0 # Correction for negative new cases in data
-covid_data$new_death[covid_data$new_death<0] = 0 # Correction for negative new deaths in data
-
-covid_data <- covid_data %>% 
-  group_by(., state) %>% 
-  arrange(., state, submission_date) %>% 
-  mutate(., delta_new_case=new_case-lag(new_case,1), delta_new_death=new_death-lag(new_death,1)) %>% 
-  select(., state, submission_date, tot_cases,new_case,delta_new_case, tot_death,new_death,delta_new_death) %>% 
-  inner_join(census_df, by=c("state"="state.abb")) %>% 
-  mutate(total_cases_per_capita=tot_cases/Population2020,
-         new_cases_per_capita=new_case/Population2020,
-         total_death_per_capita=tot_death/Population2020,
-         new_death_per_capita=new_death/Population2020,
-         roll7d_new_cases_per_capita=zoo::rollmean(new_cases_per_capita,k=7,fill=NA,align='right'),
-         roll7d_new_death_per_capita=zoo::rollmean(new_death_per_capita,k=7,fill=NA,align='right'),
-         mortality_rate=case_when(tot_cases==0 ~ 0,
-                                  TRUE ~ tot_death/tot_cases))
+us_data = covid_data %>% 
+  group_by(submission_date) %>% 
+  summarise_if(.predicate=is.numeric,.funs=sum,na.rm=T) %>% 
+  mutate(state=USA.abb)
 
 covid_data = covid_data %>% 
-  select(State=State,
-         'State Abbr'=state,
-         'Submission Date'=submission_date, 
-         Population=Population2020,
-        'Total Cases'=tot_cases, 
-        'New Cases'=new_case, 
-        'Change(New Cases)'=delta_new_case,
-        'Total Deaths'=tot_death,
-        'New Deaths'=new_death, 
-        'Change(New Deaths)'=delta_new_death,
-        'Total Cases Per Capita'=total_cases_per_capita, 
-        'New Cases Per Capita'=new_cases_per_capita,
-        'Total Deaths Per Capita'=total_death_per_capita, 
-        'New Deaths Per Capita'=new_death_per_capita,
-        'Mortality Rate'=mortality_rate,
-        'Rolling 7 Day New Cases Per Capita'=roll7d_new_cases_per_capita,
-        'Rolling 7 Day New Deaths Per Capita'=roll7d_new_death_per_capita) %>% 
-  filter(State %in% states)
-
-colChoices <- sort(colnames(covid_data)[-1:-4])
-colFormats <- c(1,1,100,1,100,1,100,100,100,1,100,1,100)
-value_formats = data.frame(col=colChoices,format=colFormats)
-
-latest_data <- covid_data %>% 
+  bind_rows(us_data) %>% 
+  arrange(state,submission_date) %>% 
+  group_by(state) %>% 
+  mutate(new_cases=tot_cases-lag(tot_cases,1),
+         new_death=tot_death-lag(tot_death,1),
+         new_negative=tot_negative-lag(tot_negative,1),
+         new_tests=tot_tests-lag(tot_tests,1),
+         mortality_rate=case_when(tot_cases==0 ~ 0,
+                                  TRUE ~ tot_death/tot_cases),
+         positivity_rate=case_when(tot_tests==0 ~ 0,
+                                   TRUE ~ new_cases/tot_tests)) %>%
   ungroup() %>% 
-  filter(`Submission Date`==latest_date, State %in% states)
+  inner_join(census_df,by=c("state"="state.abb")) %>% 
+  mutate(new_cases_per_capita=new_cases/Population2020,
+         new_death_per_capita=new_death/Population2020,
+         new_tests_per_capita=new_tests/Population2020,
+         roll7d_new_cases_per_capita=zoo::rollmean(new_cases_per_capita,k=7,fill=NA,align='right'),
+         roll7d_new_death_per_capita=zoo::rollmean(new_death_per_capita,k=7,fill=NA,align='right')) %>% 
+  select(State,
+         "State Abbr"=state,
+         'Submission Date'=submission_date,
+         Population=Population2020,
+         'Total Tests'=tot_tests,
+         'Total Positive Cases'=tot_cases,
+         'Total Negative Tests'=tot_negative,
+         'Mortality Rate'=mortality_rate,
+         'New Tests'=new_tests,
+         'New Positive Cases'=new_cases,
+         'New Negative Tests'=new_negative,
+         'Positivity Rate'=positivity_rate,
+         'Per Capita New Cases'=new_cases_per_capita,
+         'Per Capita New Deaths'=new_death_per_capita,
+         'Per Capita New Tests' =new_tests_per_capita,
+         'Rolling 7 Day New Cases Per Capita'=roll7d_new_cases_per_capita,
+         'Rolling 7 Day New Deaths Per Capita'=roll7d_new_death_per_capita
+  )
 
+## Latest date is used to show in the title
+latest_date <- max(covid_data$`Submission Date`)
+as_of_date <- format(latest_date, "%m/%d/%Y")
+
+## Latest data is used in info boxes
+latest_data <- covid_data %>% 
+  filter(`Submission Date`==latest_date,
+         State != USA)
+
+## Below formats are used for different attributes to display properly
+colChoices <- sort(colnames(covid_data)[-1:-4])
+colFormats <- c(100,1,1,1,100,100,100,100,100,100,1,1,1) # 1 = comma, 100 = percentage
+value_formats = data.frame(col=colChoices,format=colFormats)

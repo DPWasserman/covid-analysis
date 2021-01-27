@@ -25,7 +25,7 @@ shinyServer(function(input, output) {
                    filter(.,State==input$stateSel), 
                aes_string(x="`Submission Date`", 
                    y=columnSelect())) + 
-            geom_smooth(method='loess', formula='y~x', se=F) +
+            # geom_smooth(method='loess', formula='y~x', se=F) +
             geom_line(aes(color=State)) +
             ggtitle(paste(input$colSel,"Over Time for",input$stateSel)) +
             theme(plot.title=element_text(hjust=0.5))
