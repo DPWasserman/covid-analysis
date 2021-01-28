@@ -9,7 +9,7 @@ states <- sort(c(state.name, USA))
 ## Source of the Census data
 Wiki_url = 'https://en.wikipedia.org/wiki/List_of_states_and_territories_of_the_United_States_by_population'
 census_df <- read.csv('./data/census2020.csv')
-usa_census = c(USA, sum(census_df$Population2020), USA.abb)
+usa_census = list(USA, sum(census_df$Population2020), USA.abb)
 census_df = rbind(census_df,setNames(usa_census, names(census_df)))
 
 ## Form the COVID data set
@@ -31,7 +31,7 @@ us_data = covid_data %>%
   mutate(state=USA.abb)
 
 covid_data = covid_data %>% 
-  bind_rows(us_data) %>% 
+  rbind(us_data) %>% 
   arrange(state,submission_date) %>% 
   group_by(state) %>% 
   mutate(new_cases=tot_cases-lag(tot_cases,1),
@@ -48,7 +48,9 @@ covid_data = covid_data %>%
          new_death_per_capita=new_death/Population2020,
          new_tests_per_capita=new_tests/Population2020,
          roll7d_new_cases_per_capita=zoo::rollmean(new_cases_per_capita,k=7,fill=NA,align='right'),
-         roll7d_new_death_per_capita=zoo::rollmean(new_death_per_capita,k=7,fill=NA,align='right')) %>% 
+         roll7d_new_death_per_capita=zoo::rollmean(new_death_per_capita,k=7,fill=NA,align='right'),
+         roll7d_new_tests_per_capita=zoo::rollmean(new_tests_per_capita,k=7,fill=NA,aligh='right')
+         ) %>% 
   select(State,
          "State Abbr"=state,
          'Submission Date'=submission_date,
@@ -65,7 +67,8 @@ covid_data = covid_data %>%
          'Per Capita New Deaths'=new_death_per_capita,
          'Per Capita New Tests' =new_tests_per_capita,
          'Rolling 7 Day New Cases Per Capita'=roll7d_new_cases_per_capita,
-         'Rolling 7 Day New Deaths Per Capita'=roll7d_new_death_per_capita
+         'Rolling 7 Day New Deaths Per Capita'=roll7d_new_death_per_capita,
+         'Rolling 7 Day New Tests Per Capita'=roll7d_new_tests_per_capita
   )
 
 ## Latest date is used to show in the title
@@ -79,5 +82,5 @@ latest_data <- covid_data %>%
 
 ## Below formats are used for different attributes to display properly
 colChoices <- sort(colnames(covid_data)[-1:-4])
-colFormats <- c(100,1,1,1,100,100,100,100,100,100,1,1,1) # 1 = comma, 100 = percentage
+colFormats <- c(100,1,1,1,100,100,100,100,100,100,100,1,1,1) # 1 = comma, 100 = percentage
 value_formats = data.frame(col=colChoices,format=colFormats)
