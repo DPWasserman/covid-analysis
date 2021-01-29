@@ -7,13 +7,13 @@ state_df <- data.frame(state.abb=c(state.abb,USA.abb),state.name=c(state.name, U
 states <- sort(c(state.name, USA))
 
 ## Source of the Census data
-Wiki_url = 'https://en.wikipedia.org/wiki/List_of_states_and_territories_of_the_United_States_by_population'
+wiki_url = 'https://en.wikipedia.org/wiki/List_of_states_and_territories_of_the_United_States_by_population'
 census_df <- read.csv('./data/census2020.csv')
 usa_census = list(USA, sum(census_df$Population2020), USA.abb)
 census_df = rbind(census_df,setNames(usa_census, names(census_df)))
 
 ## Form the COVID data set
-# Data downloaded from https://covidtracking.com/data/download/all-states-history.csv
+covid_url = https://covidtracking.com/data/download/all-states-history.csv
 covid_data <- read.csv('data/all-states-history.csv')
 covid_data = covid_data %>% 
   filter(state %in% state.abb) %>% 
