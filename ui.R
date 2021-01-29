@@ -15,12 +15,14 @@ shinyUI(dashboardPage(
                              a pandemic going by many names: Coronavirus, COVID-19, SARS-COV-2, et al.
                              It is said that to defeat one\'s opponent, one must know the enemy.
                              Understanding trend analysis and correlation is a good approach.'),
-                             p('This project attempts to visualize the trends of the disease on two levels: 
-                             Cases and Deaths. This is done on a state by state basis.'),
+                             p('This project attempts to visualize the daily trends of the disease on a state by state basis. 
+                               The starting data is composed of positive and negative tests, deaths from COVID, and estimated 2020 population.
+                               These data points allowed the computation of mortality rates, positivity rates, and per capita calculations.
+                               Data was aggregated across the 50 states to simulate the United States.'),
                              p('Data about the disease was obtained from ',
                                a('covidtracking.com',
                                  href=covid_url), 
-                               'while population data for 2020 came from ',
+                               ', which is curated by the Atlantic Monthly Group, while population data for 2020 came from ',
                                a('Wikipedia',href=wiki_url),'.'),
                              title="Introduction", width=12))),
         
@@ -58,7 +60,8 @@ shinyUI(dashboardPage(
                                           href='mailto:davidphilipwasserman@gmail.com')), 
                              br(),
                              p('GitHub:',a('https://github.com/DPWasserman/covid_analysis',
-                                           href='https://github.com/DPWasserman/covid_analysis'))
+                                           href='https://github.com/DPWasserman/covid_analysis')),
+                             p('Application hosted at:',a('ShinyApps.io', href='https://dpwasserman.shinyapps.io/COVID_analysis/'))
                              )
                          )
                 )
