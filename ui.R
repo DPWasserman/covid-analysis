@@ -4,7 +4,7 @@ shinyUI(dashboardPage(
     dashboardSidebar(
         sidebarMenu(
             menuItem("Introduction", tabName = "intro", icon = icon("clinic-medical")),
-            menuItem("State Graphs", tabName = "graph", icon = icon("map")),
+            menuItem("Graphs", tabName = "graph", icon = icon("map")),
             menuItem("Data", tabName = "data", icon = icon("database")),
             menuItem("About", tabName = 'about', icon=icon("address-card"))
         )
@@ -15,7 +15,7 @@ shinyUI(dashboardPage(
                              a pandemic going by many names: Coronavirus, COVID-19, SARS-COV-2, et al.
                              It is said that to defeat one\'s opponent, one must know the enemy.
                              Understanding trend analysis and correlation is a good approach.'),
-                             p('This project attempts to visualize the daily trends of the disease on a state by state basis. 
+                             p('This application attempts to visualize the daily trends of the disease on a state by state basis. 
                                The starting data is composed of positive and negative tests, deaths from COVID, and estimated 2020 population.
                                These data points allowed the computation of mortality rates, positivity rates, and per capita calculations.
                                Data was aggregated across the 50 states to simulate the United States.'),
