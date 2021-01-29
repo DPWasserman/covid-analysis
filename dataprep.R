@@ -14,7 +14,8 @@ census_df = rbind(census_df,setNames(usa_census, names(census_df)))
 
 ## Form the COVID data set
 covid_url = 'https://covidtracking.com/data/download/all-states-history.csv'
-covid_data <- read.csv('data/all-states-history.csv')
+covid_data <- read.csv('data/all-states-history.csv')  
+# covid_data <- read.csv(covid_url) ### Should I store the data or read it from the site?
 covid_data = covid_data %>% 
   filter(state %in% state.abb) %>% 
   select(submission_date=date,
@@ -38,10 +39,8 @@ covid_data = covid_data %>%
          new_death=tot_death-lag(tot_death,1),
          new_negative=tot_negative-lag(tot_negative,1),
          new_tests=tot_tests-lag(tot_tests,1),
-         mortality_rate=case_when(tot_cases==0 ~ 0,
-                                  TRUE ~ tot_death/tot_cases),
-         positivity_rate=case_when(tot_tests==0 ~ 0,
-                                   TRUE ~ new_cases/tot_tests)) %>%
+         positivity_rate=case_when(new_tests==0 ~ 0,
+                                   TRUE ~ new_cases/new_tests)) %>%
   ungroup() %>% 
   inner_join(census_df,by=c("state"="state.abb")) %>% 
   mutate(new_cases_per_capita=new_cases/Population2020,
@@ -57,7 +56,7 @@ covid_data = covid_data %>%
          'Total Tests'=tot_tests,
          'Total Positive Cases'=tot_cases,
          'Total Negative Tests'=tot_negative,
-         'Mortality Rate'=mortality_rate,
+         'New Deaths'=new_death,
          'New Tests'=new_tests,
          'New Positive Cases'=new_cases,
          'New Negative Tests'=new_negative,
@@ -79,7 +78,7 @@ latest_data <- covid_data %>%
   filter(`Submission Date`==latest_date,
          State != USA)
 
-## Below formats are used for different attributes to display properly
+## Below formats are used to display different attributes using the correct numeric format
 colChoices <- sort(colnames(covid_data)[-1:-4])
-colFormats <- c(100,1,1,1,100,100,100,100,100,100,100,1,1,1) # 1 = comma, 100 = percentage
-value_formats = data.frame(col=colChoices,format=colFormats)
+colFormats <- c(1,1,1,1,100,100,100,100,100,100,100,1,1,1) # 1 = comma, 100 = percentage
+value_formats = data.frame(col=colChoices,format=colFormats) 
