@@ -28,6 +28,7 @@ shinyServer(function(input, output) {
             # geom_smooth(method='loess', formula='y~x', se=F) +
             geom_line(aes(color=State)) +
             ggtitle(paste(input$colSel,"Over Time for",trimws(input$stateSel))) +
+            theme_classic() +
             theme(plot.title=element_text(hjust=0.5))
     })
     
