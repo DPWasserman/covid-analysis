@@ -13,7 +13,7 @@ usa_census = list(USA, sum(census_df$Population2020), USA.abb)
 census_df = rbind(census_df,setNames(usa_census, names(census_df)))
 
 ## Form the COVID data set
-covid_url = https://covidtracking.com/data/download/all-states-history.csv
+covid_url = 'https://covidtracking.com/data/download/all-states-history.csv'
 covid_data <- read.csv('data/all-states-history.csv')
 covid_data = covid_data %>% 
   filter(state %in% state.abb) %>% 
