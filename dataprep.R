@@ -15,16 +15,25 @@ census_df = rbind(census_df,setNames(usa_census, names(census_df)))
 ## Form the COVID data set
 covid_url = 'https://covidtracking.com/data/download/all-states-history.csv'
 covid_data <- read.csv('data/all-states-history.csv')  
-# covid_data <- read.csv(covid_url) ### Should I store the data or read it from the site?
+# covid_data <- read.csv(covid_url) ### Could be used to read data from the site
+
 covid_data = covid_data %>% 
   filter(state %in% state.abb) %>% 
   select(submission_date=date,
          state,
+         
          tot_death=death,
          tot_negative=negative,
          tot_cases=positive,
-         tot_tests=totalTestResults) %>%
-  mutate(submission_date=as.Date(submission_date, '%Y-%m-%d'))
+         tot_tests=totalTestResults,
+         
+         new_cases=positiveIncrease,
+         new_death=deathIncrease,
+         new_negative=negativeIncrease,
+         new_tests=totalTestResultsIncrease) %>%
+  
+  mutate(submission_date=as.Date(submission_date, '%Y-%m-%d')) %>% 
+  filter(submission_date>'2020-03-01')
 
 us_data = covid_data %>% 
   group_by(submission_date) %>% 
@@ -34,14 +43,18 @@ us_data = covid_data %>%
 covid_data = covid_data %>% 
   rbind(us_data) %>% 
   arrange(state,submission_date) %>% 
-  group_by(state) %>% 
-  mutate(new_cases=tot_cases-lag(tot_cases,1),
-         new_death=tot_death-lag(tot_death,1),
-         new_negative=tot_negative-lag(tot_negative,1),
-         new_tests=tot_tests-lag(tot_tests,1),
+#  group_by(state) %>% 
+  mutate(#new_cases=tot_cases-lag(tot_cases,1),
+         #new_death=tot_death-lag(tot_death,1),
+         #new_negative=tot_negative-lag(tot_negative,1),
+         #new_tests=tot_tests-lag(tot_tests,1), 
+    ### Using the dataset instead of calculating the change because of scrubbing in the original data set
          positivity_rate=case_when(new_tests==0 ~ 0,
-                                   TRUE ~ new_cases/new_tests)) %>%
-  ungroup() %>% 
+                                   TRUE ~ new_cases/new_tests),
+         positivity_rate=case_when(positivity_rate >= 1 ~ 1,
+                                   positivity_rate <= 0 ~ 0,
+                                   TRUE ~ positivity_rate)) %>% # Fixing irregularities in data collection
+#  ungroup() %>% 
   inner_join(census_df,by=c("state"="state.abb")) %>% 
   mutate(new_cases_per_capita=new_cases/Population2020,
          new_death_per_capita=new_death/Population2020,
