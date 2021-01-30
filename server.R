@@ -1,6 +1,4 @@
 shinyServer(function(input, output) {
-    
-    # data <- reactive({ covid_data %>% filter(., state==input$stateSel) }) # Do I need to use reactive at all?
 
     # maximum box ####
     output$latestMaxBox <- renderInfoBox({
