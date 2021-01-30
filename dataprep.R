@@ -59,9 +59,9 @@ covid_data = covid_data %>%
   mutate(new_cases_per_capita=new_cases/Population2020,
          new_death_per_capita=new_death/Population2020,
          new_tests_per_capita=new_tests/Population2020,
-         roll7d_new_cases_per_capita=zoo::rollmean(new_cases_per_capita,k=7,fill=NA,align='right'),
-         roll7d_new_death_per_capita=zoo::rollmean(new_death_per_capita,k=7,fill=NA,align='right'),
-         roll7d_new_tests_per_capita=zoo::rollmean(new_tests_per_capita,k=7,fill=NA,align='right')) %>% 
+         roll7d_new_cases_per_capita=rollmean(new_cases_per_capita,k=7,fill=NA,align='right'),
+         roll7d_new_death_per_capita=rollmean(new_death_per_capita,k=7,fill=NA,align='right'),
+         roll7d_new_tests_per_capita=rollmean(new_tests_per_capita,k=7,fill=NA,align='right')) %>% 
   select(State,
          "State Abbr"=state,
          'Submission Date'=submission_date,
