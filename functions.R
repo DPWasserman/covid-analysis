@@ -19,3 +19,15 @@ get_info <- function(data, var_name, FUNC, icon) {
                     paste0(formatC(value*100,format="f",big.mark=",",digits=2), '%'))
   return (infoBox(title=title, subtitle=state, value=valueStr, icon = icon, fill=T))
 }
+
+get_axis <- function(var_name) {
+  colFormat = value_formats[value_formats$col==var_name,'format']
+  
+  if (colFormat==1){
+    y_axis_format = scale_y_continuous(labels = scales::comma)
+  } else {
+    y_axis_format = scale_y_continuous(labels = scales::percent)
+  }
+  
+  return (y_axis_format)
+}
