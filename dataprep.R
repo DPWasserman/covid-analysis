@@ -65,7 +65,7 @@ covid_data = covid_data %>%
   select(State,
          "State Abbr"=state,
          'Submission Date'=submission_date,
-         Population=Population2020,
+         'Total Deaths'=tot_death,
          'Total Tests'=tot_tests,
          'Total Positive Cases'=tot_cases,
          'Total Negative Tests'=tot_negative,
@@ -92,6 +92,6 @@ latest_data <- covid_data %>%
          State != USA)
 
 ## Below formats are used to display different attributes using the correct numeric format
-colChoices <- sort(colnames(covid_data)[-1:-4])
-colFormats <- c(1,1,1,1,100,100,100,100,100,100,100,1,1,1) # 1 = comma, 100 = percentage
+colChoices <- sort(colnames(covid_data)[-1:-3])
+colFormats <- c(1,1,1,1,100,100,100,100,100,100,100,1,1,1,1) # 1 = comma, 100 = percentage
 value_formats = data.frame(col=colChoices,format=colFormats) 
