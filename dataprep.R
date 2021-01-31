@@ -56,6 +56,7 @@ covid_data = covid_data %>%
                                    TRUE ~ positivity_rate)) %>% # Fixing irregularities in data collection
 #  ungroup() %>% 
   inner_join(census_df,by=c("state"="state.abb")) %>% 
+  group_by(state) %>% 
   mutate(new_cases_per_capita=new_cases/Population2020,
          new_death_per_capita=new_death/Population2020,
          new_tests_per_capita=new_tests/Population2020,
