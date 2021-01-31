@@ -43,18 +43,11 @@ us_data = covid_data %>%
 covid_data = covid_data %>% 
   rbind(us_data) %>% 
   arrange(state,submission_date) %>% 
-#  group_by(state) %>% 
-  mutate(#new_cases=tot_cases-lag(tot_cases,1),
-         #new_death=tot_death-lag(tot_death,1),
-         #new_negative=tot_negative-lag(tot_negative,1),
-         #new_tests=tot_tests-lag(tot_tests,1), 
-    ### Using the dataset instead of calculating the change because of scrubbing in the original data set
-         positivity_rate=case_when(new_tests==0 ~ 0,
+  mutate(positivity_rate=case_when(new_tests==0 ~ 0,
                                    TRUE ~ new_cases/new_tests),
          positivity_rate=case_when(positivity_rate >= 1 ~ 1,
                                    positivity_rate <= 0 ~ 0,
                                    TRUE ~ positivity_rate)) %>% # Fixing irregularities in data collection
-#  ungroup() %>% 
   inner_join(census_df,by=c("state"="state.abb")) %>% 
   group_by(state) %>% 
   mutate(new_cases_per_capita=new_cases/Population2020,
@@ -92,7 +85,7 @@ latest_data <- covid_data %>%
   filter(`Submission Date`==latest_date,
          State != USA)
 
-## Below formats are used to display different attributes using the correct numeric format
+## Formats are used to display different attributes using the correct numeric format
 colChoices <- sort(colnames(covid_data)[-1:-3])
 colFormats <- c(1,1,1,1,100,100,100,100,100,100,100,1,1,1,1) # 1 = comma, 100 = percentage
 value_formats = data.frame(col=colChoices,format=colFormats) 
