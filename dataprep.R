@@ -17,6 +17,11 @@ covid_url = 'https://covidtracking.com/data/download/all-states-history.csv'
 covid_data <- read.csv('data/all-states-history.csv')  
 # covid_data <- read.csv(covid_url) ### Could be used to read data from the site
 
+covid_data$negative[is.na(covid_data$negative)] = covid_data$totalTestResults[is.na(covid_data$negative)] - 
+                                                  covid_data$positive[is.na(covid_data$negative)]
+covid_data$negative = ifelse(covid_data$negative<0,0,covid_data$negative)
+
+
 covid_data = covid_data %>% 
   filter(state %in% state.abb) %>% 
   select(submission_date=date,
