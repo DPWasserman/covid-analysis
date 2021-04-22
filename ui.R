@@ -55,12 +55,12 @@ shinyUI(dashboardPage(
                 fluidRow(box(
                              p(img(src='DPW_20201121.jpg',height=50,width=50),
                                'Author: David Wasserman'),
-                             br(),
                              p('Email:',a('davidphilipwasserman@gmail.com',
                                           href='mailto:davidphilipwasserman@gmail.com')), 
-                             br(),
                              p('GitHub:',a('https://github.com/DPWasserman/covid_analysis',
                                            href='https://github.com/DPWasserman/covid_analysis')),
+                             p('Blog Post:', a('Effect of Positivity Rates on Deaths in the United States during the COVID Pandemic',
+                                               href='https://nycdatascience.com/blog/student-works/r-shiny/effect-of-positivity-rates-on-deaths-in-the-united-states-during-the-covid-pandemic/')),
                              p('Application hosted at:',a('ShinyApps.io', href='https://dpwasserman.shinyapps.io/COVID_analysis/'))
                              )
                          )
